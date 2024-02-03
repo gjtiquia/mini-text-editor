@@ -1,0 +1,13 @@
+{
+    "private": true,
+    "name": "@mini-text-editor/basic",
+    "version": "0.1.0",
+    "author": "gjtiquia",
+    "license": "MIT",
+    "scripts": {
+        "dev:file-server": "npx @mini-text-editor/file-server"
+    },
+    "devDependencies": {
+        "@mini-text-editor/file-server": "*"
+    }
+}
