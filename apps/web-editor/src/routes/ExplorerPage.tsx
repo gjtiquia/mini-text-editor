@@ -27,7 +27,7 @@ export function ExplorerPage() {
                 <div className="px-2">
                     {getContentsQuery.data.contents.directories.map(x => {
                         return (
-                            <p>{x.name}</p>
+                            <p key={x.id}>{x.name}</p>
                         )
                     })}
                 </div>
@@ -38,7 +38,7 @@ export function ExplorerPage() {
                 <div className="px-2">
                     {getContentsQuery.data.contents.files.map(x => {
                         return (
-                            <p>{x.name}</p>
+                            <p key={x.id}>{x.name}</p>
                         )
                     })}
                 </div>

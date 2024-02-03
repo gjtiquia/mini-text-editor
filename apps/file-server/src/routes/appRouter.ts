@@ -1,24 +1,9 @@
 import * as trpcExpress from '@trpc/server/adapters/express';
-import { createContext, publicProcedure, router } from "../lib/trpc";
-import { z } from 'zod';
-import { getDirectoriesAndFilesAsync } from '../utils';
-import { getCurrectDirectory } from '../state';
+import { createContext, router } from "../lib/trpc";
+import { getContentsProcedure } from '../controllers/appController';
 
 const trpcAppRouter = router({
-    getContentsInCurrentDirectory: publicProcedure
-        .query(async () => {
-
-            const currentDirectory = getCurrectDirectory();
-            const contents = await getDirectoriesAndFilesAsync(currentDirectory);
-
-            return {
-                path: currentDirectory,
-                contents: {
-                    directories: contents.directoryContents,
-                    files: contents.fileContents,
-                }
-            };
-        })
+    getContentsInCurrentDirectory: getContentsProcedure()
 });
 
 // export type definition of API

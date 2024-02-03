@@ -3,6 +3,7 @@ import fsAsync from "fs/promises";
 import path from "path";
 
 export interface Content {
+    id: string,
     path: string,
     name: string,
     isDirectory: boolean
@@ -12,11 +13,12 @@ export async function getDirectoriesAndFilesAsync(directoryPath: string) {
     const contentNames = await getContentNamesAsync(directoryPath);
 
     const contents: Content[] = contentNames
-        .map(name => {
+        .map((name, index) => {
 
             const contentPath = path.join(directoryPath, name);
 
             return {
+                id: index.toString(),
                 path: contentPath,
                 name,
                 isDirectory: isDirectory(contentPath)
