@@ -1,5 +1,6 @@
 import { trpc } from "../../lib/trpc"
 import { DirectoryElement } from "./DirectoryElement";
+import { FileElement } from "./FileElement";
 
 export function ExplorerPage() {
 
@@ -20,7 +21,7 @@ export function ExplorerPage() {
     return (
         <div className="flex flex-col gap-4 p-2 break-words">
             <h1 className="font-bold text-center">
-                Mini Text Editor
+                Mini Text Editor: Explorer
             </h1>
 
             <div>
@@ -65,7 +66,7 @@ export function ExplorerPage() {
                 <div className="px-2">
                     {getContentsQuery.data.contents.files.map(data => {
                         return (
-                            <p key={data.id}>{data.name}</p>
+                            <FileElement key={data.id} {...data} />
                         )
                     })}
                 </div>
@@ -73,5 +74,3 @@ export function ExplorerPage() {
         </div>
     )
 }
-
-
