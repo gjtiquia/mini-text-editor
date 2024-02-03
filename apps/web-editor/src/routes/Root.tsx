@@ -1,4 +1,4 @@
-import { ExplorerPage } from "./ExplorerPage";
+import { ExplorerPage } from "../features/explorer/ExplorerPage";
 
 export function Root() {
     return (

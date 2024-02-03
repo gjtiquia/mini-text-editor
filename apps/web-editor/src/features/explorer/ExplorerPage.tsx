@@ -1,7 +1,15 @@
-import { trpc } from "../lib/trpc"
+import { trpc } from "../../lib/trpc"
+import { DirectoryElement } from "./DirectoryElement";
 
 export function ExplorerPage() {
+
+    const utils = trpc.useUtils();
     const getContentsQuery = trpc.getContentsInCurrentDirectory.useQuery();
+    const goBackMutation = trpc.goPreviousDirectory.useMutation({
+        onSuccess: () => {
+            utils.getContentsInCurrentDirectory.invalidate();
+        }
+    });
 
     if (getContentsQuery.isPending)
         return <p>Loading...</p>
@@ -16,6 +24,18 @@ export function ExplorerPage() {
             </h1>
 
             <div>
+                <button
+                    className="
+                        block underline
+                        text-blue-500 hover:text-blue-600 active:text-blue-700
+                    "
+                    onClick={() => goBackMutation.mutate()}
+                >
+                    Back
+                </button>
+            </div>
+
+            <div>
                 <h2 className="font-bold">Current Path</h2>
                 <div className="px-2">
                     <p>{getContentsQuery.data.path}</p>
@@ -25,9 +45,9 @@ export function ExplorerPage() {
             <div>
                 <h2 className="font-bold">Directories</h2>
                 <div className="px-2">
-                    {getContentsQuery.data.contents.directories.map(x => {
+                    {getContentsQuery.data.contents.directories.map(data => {
                         return (
-                            <p key={x.id}>{x.name}</p>
+                            <DirectoryElement key={data.id} {...data} />
                         )
                     })}
                 </div>
@@ -36,9 +56,9 @@ export function ExplorerPage() {
             <div>
                 <h2 className="font-bold">Files</h2>
                 <div className="px-2">
-                    {getContentsQuery.data.contents.files.map(x => {
+                    {getContentsQuery.data.contents.files.map(data => {
                         return (
-                            <p key={x.id}>{x.name}</p>
+                            <p key={data.id}>{data.name}</p>
                         )
                     })}
                 </div>
@@ -46,3 +66,5 @@ export function ExplorerPage() {
         </div>
     )
 }
+
+
