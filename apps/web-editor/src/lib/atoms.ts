@@ -1,3 +1,11 @@
 import { atom } from "jotai";
 
-export const isInExplorerAtom = atom(true);
+interface AppState {
+    isInExplorerMode: boolean,
+    activeFilePath: string,
+}
+
+export const appStateAtom = atom<AppState>({
+    isInExplorerMode: true,
+    activeFilePath: ""
+})

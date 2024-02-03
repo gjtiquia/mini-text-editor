@@ -1,11 +1,15 @@
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { createContext, router } from "../lib/trpc";
-import { changeDirectoryProcedure, getContentsProcedure, goPreviousDirectoryProcedure } from '../controllers/appController';
+import { changeDirectoryProcedure, getContentsProcedure, goPreviousDirectoryProcedure, readFileProcedure } from '../controllers/appController';
 
 const trpcAppRouter = router({
+    // Explorer
     getContentsInCurrentDirectory: getContentsProcedure(),
     changeCurrentDirectory: changeDirectoryProcedure(),
-    goPreviousDirectory: goPreviousDirectoryProcedure()
+    goPreviousDirectory: goPreviousDirectoryProcedure(),
+
+    // Editor
+    readFile: readFileProcedure(),
 });
 
 // export type definition of API

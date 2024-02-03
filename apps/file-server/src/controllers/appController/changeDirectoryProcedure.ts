@@ -4,11 +4,13 @@ import z from "zod";
 
 export function changeDirectoryProcedure() {
     return publicProcedure
-        .input(z.string())
+        .input(z.object({
+            path: z.string()
+        }))
         .mutation((opts) => {
 
             const { input } = opts;
 
-            changeCurrentDirectory(input);
+            changeCurrentDirectory(input.path);
         });
 }

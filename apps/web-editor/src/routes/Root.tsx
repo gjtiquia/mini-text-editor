@@ -1,11 +1,11 @@
 import { useAtomValue } from "jotai";
-import { isInExplorerAtom } from "../lib/atoms";
+import { appStateAtom } from "../lib/atoms";
 import { ExplorerPage, EditorPage } from "../features";
 
 export function Root() {
-    const isInExplorer = useAtomValue(isInExplorerAtom);
+    const { isInExplorerMode } = useAtomValue(appStateAtom);
 
-    if (isInExplorer)
+    if (isInExplorerMode)
         return <ExplorerPage />
 
     return (

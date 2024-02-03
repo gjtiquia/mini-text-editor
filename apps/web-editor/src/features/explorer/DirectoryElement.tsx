@@ -18,7 +18,7 @@ export function DirectoryElement(props: DirectoryElementProps) {
                 block underline
                 text-blue-500 hover:text-blue-600 active:text-blue-700
             "
-            onClick={() => changeDirectoryMutation.mutate(props.path)}
+            onClick={() => changeDirectoryMutation.mutate({ path: props.path })}
         >
             {props.name}
         </button>
