@@ -5,9 +5,11 @@
     "author": "gjtiquia",
     "license": "MIT",
     "scripts": {
-        "dev:file-server": "npx @mini-text-editor/file-server"
+        "dev:file-server": "npx @mini-text-editor/file-server",
+        "dev:web-editor": "npx @mini-text-editor/web-editor"
     },
     "devDependencies": {
-        "@mini-text-editor/file-server": "*"
+        "@mini-text-editor/file-server": "*",
+        "@mini-text-editor/web-editor": "*"
     }
 }

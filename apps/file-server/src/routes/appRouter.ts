@@ -8,8 +8,6 @@ const trpcAppRouter = router({
     getContentsInCurrentDirectory: publicProcedure
         .query(async () => {
 
-            console.log("getContentsInCurrentDirectory query");
-
             const currentDirectory = getCurrectDirectory();
             const contents = await getDirectoriesAndFilesAsync(currentDirectory);
 
