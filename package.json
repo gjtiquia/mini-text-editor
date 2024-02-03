@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "name": "mini-text-editor",
+  "version": "0.1.0",
+  "author": "gjtiquia",
+  "license": "MIT",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
