@@ -36,9 +36,16 @@ export function ExplorerPage() {
             </div>
 
             <div>
+                <h2 className="font-bold">Root Path</h2>
+                <div className="px-2">
+                    <p>{getContentsQuery.data.rootPath}/</p>
+                </div>
+            </div>
+
+            <div>
                 <h2 className="font-bold">Current Path</h2>
                 <div className="px-2">
-                    <p>{getContentsQuery.data.path}</p>
+                    <p>{getContentsQuery.data.relativePath}/</p>
                 </div>
             </div>
 

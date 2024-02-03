@@ -12,6 +12,14 @@ export function getCurrectDirectory() {
     return currentDirectory;
 }
 
+export function getRootDirectory() {
+    return rootDirectory;
+}
+
+export function getCurrentRelativePath() {
+    return path.relative(rootDirectory, currentDirectory);
+}
+
 export function changeCurrentDirectory(newDirectory: string) {
     currentDirectory = newDirectory;
 }
