@@ -1,11 +1,15 @@
+import { OuterProvider } from "./providers/OuterProvider"
+import { Root } from "./routes"
 import "./index.css"
 
+export default App
+
 function App() {
+
   return (
-    <h1 className="font-bold text-3xl">
-      Hello World
-    </h1>
+    <OuterProvider>
+      <Root />
+    </OuterProvider>
   )
 }
 
-export default App
