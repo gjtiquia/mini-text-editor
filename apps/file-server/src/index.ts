@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors";
 import { getDirectoriesAndFilesAsync } from "./getDirectoriesAndFiles";
+import { appRouter } from "./routes";
 
 console.log("Running @mini-text-editor/file-server...")
 
@@ -11,7 +12,7 @@ const PORT = 3000;
 app.use(cors()); // Enable all origins
 
 // Set Routes
-// app.use("/app", appRouter)
+app.use("/app", appRouter)
 
 app.get("/", async (req, res) => {
 
