@@ -1,8 +1,8 @@
 import { useAtom } from "jotai"
-import { CodeInput } from '@srsholmes/react-code-input';
 import { appStateAtom } from "../../lib/atoms"
 import { trpc } from "../../lib/trpc";
 import { useEffect, useState } from "react";
+import { CodeInput } from "./CodeInput";
 
 import Prism from 'prismjs';
 import('prismjs/components/prism-markdown')
@@ -55,7 +55,7 @@ export function EditorPage() {
                     // />
                     <CodeInput
                         autoHeight
-                        resize="both"
+                        // resize="both"
                         // placeholder="Input your code here..."
                         prismJS={Prism}
                         onChange={setText}
