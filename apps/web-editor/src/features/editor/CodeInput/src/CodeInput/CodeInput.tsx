@@ -46,18 +46,37 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
   }
 
   function setSizes() {
+
     setBackgroundWrapper();
-    const { height, width } = getTextareaSize();
+
+    // Basically... in the orignal code, the wrapper size depends on inner textarea size
+    // Everything is derived from textarea
+    // But! I want the textarea size to derive from outer outer outer div
+    // So.... to hack it, I passed the div reference as props and calculated it on the fly
+
+    if (textAreaElement.current && props.containerRef.current) {
+
+      const { height, width } = getContainerSize();
+
+      textAreaElement.current.style.width = `${width}px`;
+      textAreaElement.current.style.height = `${height}px`;
+    }
+
 
     if (preElement.current && wrapperElement.current && outerElement.current) {
+
+      const { height, width } = getTextareaSize();
+
       preElement.current.style.width = `${width}px`;
       preElement.current.style.height = `${height}px`;
       wrapperElement.current.style.width = `${width}px`;
       wrapperElement.current.style.height = `${height}px`;
+
       // calculate what 1rem is in pixels
       const rem = parseFloat(
         window.getComputedStyle(document.documentElement).fontSize
       );
+
       outerElement.current.style.width = `${width + rem}px`;
       outerElement.current.style.height = `${height + rem}px`;
     }
@@ -74,14 +93,24 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
     };
   }
 
+  function getContainerSize() {
+    if (props.containerRef.current) {
+      const { height, width } = props.containerRef.current.getBoundingClientRect();
+      return { height, width };
+    }
+    return {
+      height: 0,
+      width: 0,
+    };
+  }
+
   function autoHeight() {
     if (manualResize) {
       return;
     }
     if (wrapperElement.current && textAreaElement.current) {
-      wrapperElement.current.style.height = `0px`;
-      wrapperElement.current.style.height =
-        textAreaElement.current.scrollHeight + 'px';
+      // wrapperElement.current.style.height = `0px`;
+      wrapperElement.current.style.height = textAreaElement.current.scrollHeight + 'px';
     }
   }
 

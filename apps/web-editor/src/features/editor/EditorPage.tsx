@@ -1,7 +1,7 @@
 import { useAtom } from "jotai"
 import { appStateAtom } from "../../lib/atoms"
 import { trpc } from "../../lib/trpc";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CodeInput } from "./CodeInput";
 
 import Prism from 'prismjs';
@@ -14,6 +14,8 @@ export function EditorPage() {
 
     const [appState, setAppState] = useAtom(appStateAtom);
     const readFileQuery = trpc.readFile.useQuery({ path: appState.activeFilePath });
+
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const [text, setText] = useState("");
     useEffect(() => {
@@ -41,7 +43,7 @@ export function EditorPage() {
                 </button>
             </div>
 
-            <div className="flex-grow">
+            <div className="h-[80vh] w-[85vw] bg-blue-500" ref={containerRef}>
                 {readFileQuery.isPending && <p>Loading...</p>}
                 {readFileQuery.isSuccess &&
                     // <textarea
@@ -55,12 +57,14 @@ export function EditorPage() {
                     // />
                     <CodeInput
                         autoHeight
-                        // resize="both"
+                        resize="none"
                         // placeholder="Input your code here..."
                         prismJS={Prism}
                         onChange={setText}
                         value={text}
                         language={'markdown'}
+
+                        containerRef={containerRef}
                     />
                 }
             </div>

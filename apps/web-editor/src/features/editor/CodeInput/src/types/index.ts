@@ -10,4 +10,6 @@ export type CodeInputProps = {
   placeholder?: string;
   resize?: 'none' | 'both' | 'horizontal' | 'vertical';
   autoHeight?: boolean;
+
+  containerRef: React.RefObject<HTMLDivElement>
 };
