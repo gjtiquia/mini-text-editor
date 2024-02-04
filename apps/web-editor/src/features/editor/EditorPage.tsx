@@ -41,7 +41,7 @@ export function EditorPage() {
                         className="
                             h-full w-full px-2 
                             bg-transparent rounded-md border border-black
-                            whitespace-pre
+                            font-mono whitespace-pre
                         "
                         value={text}
                         onChange={e => setText(e.target.value)}
