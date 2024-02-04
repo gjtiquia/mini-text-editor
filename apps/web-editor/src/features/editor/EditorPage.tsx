@@ -9,7 +9,12 @@ import { GenericTextButton } from "../../ui/GenericTextButton";
 export function EditorPage() {
 
     const [appState, setAppState] = useAtom(appStateAtom);
+
+    const utils = trpc.useUtils();
     const readFileQuery = trpc.readFile.useQuery({ path: appState.activeFilePath });
+    const overwriteFileMutation = trpc.overwriteFile.useMutation({
+        onSuccess: () => utils.readFile.invalidate()
+    });
 
     const [originalText, setOriginalText] = useState("")
     const [text, setText] = useState("");
@@ -46,7 +51,7 @@ export function EditorPage() {
                     }
 
                     {isTextDirty() &&
-                        <GenericTextButton text="Save" onClick={() => console.log("saving...")} />
+                        <GenericTextButton text="Save" onClick={() => overwriteFileMutation.mutate({ path: appState.activeFilePath, text: text })} />
                     }
                 </div>
             </div>

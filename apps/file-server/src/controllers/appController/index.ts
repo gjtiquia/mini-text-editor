@@ -5,3 +5,4 @@ export * from "./goPreviousDirectoryProcedure"
 
 // Editor
 export * from "./readFileProcedure"
+export * from "./overwriteFileProcedure"

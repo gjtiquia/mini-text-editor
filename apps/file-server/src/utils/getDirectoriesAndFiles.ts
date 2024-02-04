@@ -1,5 +1,5 @@
 import fs from "fs";
-import fsAsync from "fs/promises";
+import fsPromises from "fs/promises";
 import path from "path";
 
 export interface Content {
@@ -40,7 +40,7 @@ async function getContentNamesAsync(directoryPath: string) {
     if (!isPathDirectory)
         throw new Error(`Path '${directoryPath}' is not a directory!`);
 
-    const files = await fsAsync.readdir(directoryPath);
+    const files = await fsPromises.readdir(directoryPath);
     return files;
 }
 
