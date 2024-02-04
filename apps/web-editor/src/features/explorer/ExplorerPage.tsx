@@ -1,4 +1,5 @@
 import { trpc } from "../../lib/trpc"
+import { GenericTextButton } from "../../ui/GenericTextButton";
 import { DirectoryElement } from "./DirectoryElement";
 import { FileElement } from "./FileElement";
 
@@ -25,15 +26,10 @@ export function ExplorerPage() {
             </h1>
 
             <div>
-                <button
-                    className="
-                        block underline
-                        text-blue-500 hover:text-blue-600 active:text-blue-700
-                    "
+                <GenericTextButton
+                    text={"cd .."}
                     onClick={() => goBackMutation.mutate()}
-                >
-                    cd ..
-                </button>
+                />
             </div>
 
             <div>

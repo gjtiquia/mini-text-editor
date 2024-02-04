@@ -1,10 +1,9 @@
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai"
 import { appStateAtom } from "../../lib/atoms"
 import { trpc } from "../../lib/trpc";
-import { useEffect, useState } from "react";
-import { BackButton } from "./BackButton";
-import { EditorView } from "./EditorView";
 import { GenericTextButton } from "../../ui/GenericTextButton";
+import { EditorView } from "./EditorView";
 
 export function EditorPage() {
 
@@ -42,7 +41,7 @@ export function EditorPage() {
 
             <div className="flex justify-between">
                 <div>
-                    <BackButton onClick={() => setAppState({ isInExplorerMode: true, activeFilePath: "" })} />
+                    <GenericTextButton text="Back To Explorer" onClick={() => setAppState({ isInExplorerMode: true, activeFilePath: "" })} />
                 </div>
 
                 <div className="flex gap-2">
