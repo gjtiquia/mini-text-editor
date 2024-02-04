@@ -32,7 +32,7 @@ export function ExplorerPage() {
                     "
                     onClick={() => goBackMutation.mutate()}
                 >
-                    Back
+                    cd ..
                 </button>
             </div>
 
