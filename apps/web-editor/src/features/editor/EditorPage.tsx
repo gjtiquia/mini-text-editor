@@ -1,7 +1,14 @@
 import { useAtom } from "jotai"
+import { CodeInput } from '@srsholmes/react-code-input';
 import { appStateAtom } from "../../lib/atoms"
 import { trpc } from "../../lib/trpc";
 import { useEffect, useState } from "react";
+
+import Prism from 'prismjs';
+import('prismjs/components/prism-markdown')
+// import "./themes/prism.css"
+// import "./themes/prism-vsc-dark-plus.css"
+import "./themes/prism-atom-dark.css"
 
 export function EditorPage() {
 
@@ -37,14 +44,23 @@ export function EditorPage() {
             <div className="flex-grow">
                 {readFileQuery.isPending && <p>Loading...</p>}
                 {readFileQuery.isSuccess &&
-                    <textarea
-                        className="
-                            h-full w-full px-2 
-                            bg-transparent rounded-md border border-black
-                            font-mono whitespace-pre
-                        "
+                    // <textarea
+                    //     className="
+                    //         h-full w-full px-2
+                    //         bg-transparent rounded-md border border-black
+                    //         font-mono whitespace-pre
+                    //     "
+                    //     value={text}
+                    //     onChange={e => setText(e.target.value)}
+                    // />
+                    <CodeInput
+                        autoHeight
+                        resize="both"
+                        // placeholder="Input your code here..."
+                        prismJS={Prism}
+                        onChange={setText}
                         value={text}
-                        onChange={e => setText(e.target.value)}
+                        language={'markdown'}
                     />
                 }
             </div>
