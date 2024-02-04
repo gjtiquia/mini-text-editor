@@ -2,19 +2,32 @@ import { useAtom } from "jotai"
 import { appStateAtom } from "../../lib/atoms"
 import { trpc } from "../../lib/trpc";
 import { useEffect, useState } from "react";
+import { BackButton } from "./BackButton";
+import { EditorView } from "./EditorView";
+import { GenericTextButton } from "../../ui/GenericTextButton";
 
 export function EditorPage() {
 
     const [appState, setAppState] = useAtom(appStateAtom);
     const readFileQuery = trpc.readFile.useQuery({ path: appState.activeFilePath });
 
+    const [originalText, setOriginalText] = useState("")
     const [text, setText] = useState("");
+
     useEffect(() => {
         if (!readFileQuery.data)
             return;
 
-        setText(readFileQuery.data?.text)
+        const text = readFileQuery.data.text;
+
+        setOriginalText(text);
+        setText(text);
+
     }, [readFileQuery.data])
+
+    function isTextDirty() {
+        return originalText !== text;
+    }
 
     return (
         <div className="h-dvh flex flex-col gap-4 p-2">
@@ -22,33 +35,29 @@ export function EditorPage() {
                 Mini Text Editor: Explorer
             </h1>
 
-            <div>
-                <button
-                    className="
-                        block underline
-                        text-blue-500 hover:text-blue-600 active:text-blue-700
-                    "
-                    onClick={() => setAppState({ isInExplorerMode: true, activeFilePath: "" })}
-                >
-                    Back To Explorer
-                </button>
+            <div className="flex justify-between">
+                <div>
+                    <BackButton onClick={() => setAppState({ isInExplorerMode: true, activeFilePath: "" })} />
+                </div>
+
+                <div className="flex gap-2">
+                    {isTextDirty() &&
+                        <GenericTextButton text="Reset" onClick={() => setText(originalText)} />
+                    }
+
+                    {isTextDirty() &&
+                        <GenericTextButton text="Save" onClick={() => console.log("saving...")} />
+                    }
+                </div>
             </div>
 
             <div className="flex-grow">
                 {readFileQuery.isPending && <p>Loading...</p>}
                 {readFileQuery.isSuccess &&
-                    <textarea
-                        className="
-                            h-full w-full px-2 
-                            bg-transparent rounded-md border border-black
-                            font-mono whitespace-pre
-                        "
-                        value={text}
-                        onChange={e => setText(e.target.value)}
-                    />
+                    <EditorView text={text} setText={(x) => setText(x)} />
                 }
             </div>
-
         </div>
     )
 }
+
