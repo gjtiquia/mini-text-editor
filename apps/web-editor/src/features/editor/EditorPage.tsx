@@ -54,7 +54,7 @@ export function EditorPage() {
                     //     onChange={e => setText(e.target.value)}
                     // />
                     <CodeInput
-                        autoHeight
+                        // autoHeight
                         // resize="both"
                         // placeholder="Input your code here..."
                         prismJS={Prism}

@@ -50,16 +50,33 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
     const { height, width } = getTextareaSize();
 
     if (preElement.current && wrapperElement.current && outerElement.current) {
-      preElement.current.style.width = `${width}px`;
-      preElement.current.style.height = `${height}px`;
-      wrapperElement.current.style.width = `${width}px`;
-      wrapperElement.current.style.height = `${height}px`;
+
+      // preElement.current.style.width = `${width}px`;
+      // preElement.current.style.height = `${height}px`;
+      // wrapperElement.current.style.width = `${width}px`;
+      // wrapperElement.current.style.height = `${height}px`;
+
+      // // calculate what 1rem is in pixels
+      // const rem = parseFloat(
+      //   window.getComputedStyle(document.documentElement).fontSize
+      // );
+
+      // outerElement.current.style.width = `${width + rem}px`;
+      // outerElement.current.style.height = `${height + rem}px`;
+
+      preElement.current.style.width = `100%`;
+      preElement.current.style.height = `100$`;
+      wrapperElement.current.style.width = `100%`;
+      wrapperElement.current.style.height = `100$`;
+
       // calculate what 1rem is in pixels
       const rem = parseFloat(
         window.getComputedStyle(document.documentElement).fontSize
       );
-      outerElement.current.style.width = `${width + rem}px`;
-      outerElement.current.style.height = `${height + rem}px`;
+
+      outerElement.current.style.width = `100%`;
+      outerElement.current.style.height = `100%`;
+
     }
   }
 
@@ -121,15 +138,6 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
           }
           return props.prismJS.util.encode(props.value).toString();
         }
-      } else if (props.highlightjs) {
-        // @ts-ignore
-        const tokens = props.highlightjs.highlight(props.value, {
-          language: props.language,
-        }).value;
-        if (props.autoHeight) {
-          autoHeight();
-        }
-        return tokens;
       }
     } catch (e) {
       console.error(e);
