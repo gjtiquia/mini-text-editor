@@ -1,9 +1,10 @@
-import React, {
+import {
   ChangeEvent,
   KeyboardEvent,
   useEffect,
   useRef,
 } from 'react';
+import Prism from 'prismjs';
 import styles from './styles.module.css';
 import { CodeInputProps } from '../types';
 import { handleEnterKey, handleTabKey } from '../utils';
@@ -20,20 +21,6 @@ export function CodeInput(props: CodeInputProps) {
   }, []);
 
   useEffect(() => {
-
-    // Commented because we want to stop the infinite resize loop
-    // if (!textAreaElement.current)
-    //   return;
-    // new ResizeObserver(setElementSizes).observe(textAreaElement.current)
-
-    setElementSizes();
-
-    // Temporarily commented because it is quite annoying lol
-    // Tho indeed should run this again when container size changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     generateCodeTokens();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,43 +32,6 @@ export function CodeInput(props: CodeInputProps) {
 
     const preElementBackgroundColor = window.getComputedStyle(preElement.current).backgroundColor;
     outerWrapperDivElement.current.style.backgroundColor = preElementBackgroundColor;
-  }
-
-  function setElementSizes() {
-
-    if (!textAreaElement.current || !props.containerRef.current) return;
-    if (!preElement.current || !wrapperDivElement.current || !outerWrapperDivElement.current) return;
-
-    const { height, width } = getContainerSize();
-
-    textAreaElement.current.style.width = `${width}px`;
-    textAreaElement.current.style.height = `${height}px`;
-
-    preElement.current.style.width = `${width}px`;
-    preElement.current.style.height = `${height}px`;
-
-    wrapperDivElement.current.style.width = `${width}px`;
-    wrapperDivElement.current.style.height = `${height}px`;
-
-    // (GJ): originally this function is called everytime textarea is resized. probably to show an extra line below
-    // calculate what 1rem is in pixels
-    // const rem = parseFloat(
-    //   window.getComputedStyle(document.documentElement).fontSize
-    // );
-    // outerWrapperDivElement.current.style.width = `${width + rem}px`;
-    // outerWrapperDivElement.current.style.height = `${height + rem}px`;
-
-    outerWrapperDivElement.current.style.width = `${width}px`;
-    outerWrapperDivElement.current.style.height = `${height}px`;
-  }
-
-  function getContainerSize() {
-    if (!props.containerRef.current) {
-      return { height: 0, width: 0 };
-    }
-
-    const { height, width } = props.containerRef.current.getBoundingClientRect();
-    return { height, width };
   }
 
   function syncPreElementScrollWithTextAreaScroll() {
@@ -102,25 +52,14 @@ export function CodeInput(props: CodeInputProps) {
   }
 
   const generateCodeTokens = () => {
+    if (!Prism.languages[props.language])
+      return Prism.util.encode(props.value).toString();
 
-    try {
-      if (props.prismJS.languages[props.language]) {
-
-        const tokens = props.prismJS.highlight(
-          props.value,
-          props.prismJS.languages[props.language],
-          props.language
-        );
-
-        return tokens;
-      } else {
-
-        return props.prismJS.util.encode(props.value).toString();
-      }
-
-    } catch (e) {
-      console.error(e);
-    }
+    return Prism.highlight(
+      props.value,
+      Prism.languages[props.language],
+      props.language
+    );
   };
 
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -140,39 +79,28 @@ export function CodeInput(props: CodeInputProps) {
     props.onChange((e.target as HTMLTextAreaElement).value);
   }
 
-
   return (
     <div
       ref={outerWrapperDivElement}
-
-      style={{
-        // padding: '1rem', // FOUND THE UNWANTED PADDING
-        boxSizing: `border-box`,
-      }}
-
-      className={styles['outer-wrapper']}
+      className={styles['outer-wrapper'] + " " + "h-full w-full p-2 rounded-md"}
     >
       <div
         ref={wrapperDivElement}
-
-        className={styles.wrap}
+        className={styles.wrap + " " + "h-full w-full"}
       >
         <textarea
           ref={textAreaElement}
-
           className="resize-none"
+
           spellCheck={false}
 
           onKeyDown={handleKeyDown}
           onInput={handleInput}
           onScroll={syncPreElementScrollWithTextAreaScroll}
 
-          // An attempt to replace the ResizeObserver
-          // onResize={() => setElementSizes()}
-
           placeholder={props.placeholder}
           value={props.value}
-        ></textarea>
+        />
 
         <pre
           ref={preElement!}

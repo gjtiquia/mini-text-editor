@@ -55,7 +55,7 @@ export function EditorPage() {
                 </div>
             </div>
 
-            <div className="flex-grow bg-red-500">
+            <div className="flex-grow">
                 {readFileQuery.isPending && <p>Loading...</p>}
                 {readFileQuery.isSuccess &&
                     <EditorView text={text} setText={(x) => setText(x)} />

@@ -18,7 +18,8 @@
   font-family: monospace;
   line-height: normal;
   tab-size: 2;
-  caret-color: darkgrey;
+  /* caret-color: darkgrey; */
+  caret-color: white;
   white-space: pre;
 }
 
