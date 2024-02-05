@@ -150,15 +150,6 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
           }
           return props.prismJS.util.encode(props.value).toString();
         }
-      } else if (props.highlightjs) {
-        // @ts-ignore
-        const tokens = props.highlightjs.highlight(props.value, {
-          language: props.language,
-        }).value;
-        if (props.autoHeight) {
-          autoHeight();
-        }
-        return tokens;
       }
     } catch (e) {
       console.error(e);
