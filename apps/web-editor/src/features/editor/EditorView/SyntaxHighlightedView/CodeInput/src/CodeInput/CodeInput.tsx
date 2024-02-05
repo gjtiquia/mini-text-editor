@@ -8,7 +8,7 @@ import styles from './styles.module.css';
 import { CodeInputProps } from '../types';
 import { handleEnterKey, handleTabKey } from '../utils';
 
-export const CodeInput: React.FC<CodeInputProps> = (props) => {
+export function CodeInput(props: CodeInputProps) {
 
   const outerWrapperDivElement = useRef<HTMLDivElement>(null);
   const wrapperDivElement = useRef<HTMLDivElement>(null);
@@ -16,9 +16,7 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
   const textAreaElement = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-
     updateOuterWrapperDivBackgroundColor();
-
   }, []);
 
   useEffect(() => {
@@ -30,11 +28,13 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
 
     setElementSizes();
 
+    // Temporarily commented because it is quite annoying lol
+    // Tho indeed should run this again when container size changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    codeTokens();
+    generateCodeTokens();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.language]);
@@ -49,74 +49,42 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
 
   function setElementSizes() {
 
-    console.log("setElementSizes: Running...");
+    if (!textAreaElement.current || !props.containerRef.current) return;
+    if (!preElement.current || !wrapperDivElement.current || !outerWrapperDivElement.current) return;
 
-    updateOuterWrapperDivBackgroundColor();
+    const { height, width } = getContainerSize();
 
-    // Basically... in the orignal code, the wrapper size depends on inner textarea size
-    // Everything is derived from textarea
-    // But! I want the textarea size to derive from outer outer outer div
-    // So.... to hack it, I passed the div reference as props and calculated it on the fly
+    textAreaElement.current.style.width = `${width}px`;
+    textAreaElement.current.style.height = `${height}px`;
 
-    // But... outer div size is also dependent on the inner children... so feedback loop and expands infinitely...
+    preElement.current.style.width = `${width}px`;
+    preElement.current.style.height = `${height}px`;
 
-    if (textAreaElement.current && props.containerRef.current) {
+    wrapperDivElement.current.style.width = `${width}px`;
+    wrapperDivElement.current.style.height = `${height}px`;
 
-      const { height, width } = getContainerSize();
+    // (GJ): originally this function is called everytime textarea is resized. probably to show an extra line below
+    // calculate what 1rem is in pixels
+    // const rem = parseFloat(
+    //   window.getComputedStyle(document.documentElement).fontSize
+    // );
+    // outerWrapperDivElement.current.style.width = `${width + rem}px`;
+    // outerWrapperDivElement.current.style.height = `${height + rem}px`;
 
-      console.log("container size", { height, width })
-
-      textAreaElement.current.style.width = `${width}px`;
-      textAreaElement.current.style.height = `${height}px`;
-    }
-
-
-    if (preElement.current && wrapperDivElement.current && outerWrapperDivElement.current) {
-
-      const { height, width } = getTextareaSize();
-
-      preElement.current.style.width = `${width}px`;
-      preElement.current.style.height = `${height}px`;
-      wrapperDivElement.current.style.width = `${width}px`;
-      wrapperDivElement.current.style.height = `${height}px`;
-
-      // (GJ): Commented because not sure why this is needed?
-      // calculate what 1rem is in pixels
-      // const rem = parseFloat(
-      //   window.getComputedStyle(document.documentElement).fontSize
-      // );
-      // outerWrapperDivElement.current.style.width = `${width + rem}px`;
-      // outerWrapperDivElement.current.style.height = `${height + rem}px`;
-
-      outerWrapperDivElement.current.style.width = `${width}px`;
-      outerWrapperDivElement.current.style.height = `${height}px`;
-    }
-  }
-
-  function getTextareaSize() {
-    if (textAreaElement.current) {
-      const { height, width } = textAreaElement.current.getBoundingClientRect();
-      return { height, width };
-    }
-    return {
-      height: 0,
-      width: 0,
-    };
+    outerWrapperDivElement.current.style.width = `${width}px`;
+    outerWrapperDivElement.current.style.height = `${height}px`;
   }
 
   function getContainerSize() {
-    if (props.containerRef.current) {
-      const { height, width } = props.containerRef.current.getBoundingClientRect();
-      return { height, width };
+    if (!props.containerRef.current) {
+      return { height: 0, width: 0 };
     }
 
-    return {
-      height: 0,
-      width: 0,
-    };
+    const { height, width } = props.containerRef.current.getBoundingClientRect();
+    return { height, width };
   }
 
-  function syncScroll() {
+  function syncPreElementScrollWithTextAreaScroll() {
     if (preElement.current === null || textAreaElement.current === null) return;
 
     preElement.current.scrollTop = textAreaElement.current.scrollTop;
@@ -127,12 +95,13 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
       textAreaElement.current.scrollTop = preElement.current.scrollTop;
     }
 
+    // Prevents a scrolling issue when the user manually resizes the wrapper
     if (textAreaElement.current.scrollLeft > preElement.current.scrollLeft) {
       textAreaElement.current.scrollLeft = preElement.current.scrollLeft;
     }
   }
 
-  const codeTokens = () => {
+  const generateCodeTokens = () => {
 
     try {
       if (props.prismJS.languages[props.language]) {
@@ -144,7 +113,6 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
         );
 
         return tokens;
-
       } else {
 
         return props.prismJS.util.encode(props.value).toString();
@@ -197,7 +165,7 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
 
           onKeyDown={handleKeyDown}
           onInput={handleInput}
-          onScroll={syncScroll}
+          onScroll={syncPreElementScrollWithTextAreaScroll}
 
           // An attempt to replace the ResizeObserver
           // onResize={() => setElementSizes()}
@@ -212,7 +180,7 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
           aria-hidden={true}
         >
           <div
-            dangerouslySetInnerHTML={{ __html: codeTokens() || '' }}
+            dangerouslySetInnerHTML={{ __html: generateCodeTokens() || '' }}
             className="code-highlighted"
           />
         </pre>
