@@ -1,4 +1,4 @@
-import fsAsync from "fs/promises";
+import fsPromises from "fs/promises";
 import z from "zod";
 import { publicProcedure } from "../../lib/trpc";
 
@@ -11,7 +11,7 @@ export function readFileProcedure() {
 
             const { input } = opts;
 
-            const text = await fsAsync.readFile(input.path, "utf-8");
+            const text = await fsPromises.readFile(input.path, "utf-8");
 
             return {
                 text

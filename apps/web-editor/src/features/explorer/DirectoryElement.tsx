@@ -1,4 +1,5 @@
 import { AppRouterOutput, trpc } from "../../lib/trpc";
+import { GenericTextButton } from "../../ui/GenericTextButton";
 
 type DirectoryContent = AppRouterOutput["getContentsInCurrentDirectory"]["contents"]["directories"][0]
 interface DirectoryElementProps extends DirectoryContent { }
@@ -13,14 +14,9 @@ export function DirectoryElement(props: DirectoryElementProps) {
     })
 
     return (
-        <button
-            className="
-                block underline
-                text-blue-500 hover:text-blue-600 active:text-blue-700
-            "
+        <GenericTextButton
+            text={props.name}
             onClick={() => changeDirectoryMutation.mutate({ path: props.path })}
-        >
-            {props.name}
-        </button>
-    );
+        />
+    )
 }

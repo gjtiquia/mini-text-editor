@@ -1,6 +1,6 @@
 import * as trpcExpress from '@trpc/server/adapters/express';
 import { createContext, router } from "../lib/trpc";
-import { changeDirectoryProcedure, getContentsProcedure, goPreviousDirectoryProcedure, readFileProcedure } from '../controllers/appController';
+import { changeDirectoryProcedure, getContentsProcedure, goPreviousDirectoryProcedure, overwriteFileProcedure, readFileProcedure } from '../controllers/appController';
 
 const trpcAppRouter = router({
     // Explorer
@@ -10,6 +10,7 @@ const trpcAppRouter = router({
 
     // Editor
     readFile: readFileProcedure(),
+    overwriteFile: overwriteFileProcedure(),
 });
 
 // export type definition of API
