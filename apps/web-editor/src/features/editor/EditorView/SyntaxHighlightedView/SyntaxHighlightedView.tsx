@@ -13,7 +13,7 @@ export function SyntaxHighlightedView(props: { text: string; setText: (text: str
 
     return (
         <div className="flex justify-center">
-            <div className="max-h-[80vh] max-w-[85vw] h-[80vh] w-[85vw] bg-blue-500" ref={containerRef}>
+            <div className="max-h-[80vh] max-w-[85vw] bg-blue-500" ref={containerRef}>
                 <CodeInput
                     autoHeight
                     resize="none"

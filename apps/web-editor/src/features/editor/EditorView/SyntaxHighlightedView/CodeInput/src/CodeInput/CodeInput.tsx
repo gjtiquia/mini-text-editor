@@ -10,38 +10,40 @@ import { CodeInputProps } from '../types';
 import { handleEnterKey, handleTabKey } from '../utils';
 
 export const CodeInput: React.FC<CodeInputProps> = (props) => {
+
+  let outerWrapperDivElement = useRef<HTMLDivElement>(null);
+  let wrapperDiv = useRef<HTMLDivElement>(null);
   let preElement = useRef<HTMLPreElement>(null);
   let textAreaElement = useRef<HTMLTextAreaElement>(null);
-  let wrapperElement = useRef<HTMLDivElement>(null);
-  let outerElement = useRef<HTMLDivElement>(null);
-
-  // Used to detect when the user manually resizes the wrapper with handle
-  let wrapperHeight: number;
-  let wrapperWidth: number;
 
   const [manualResize, setManualResize] = useState(false);
 
   useEffect(() => {
+
     watchResize();
+
     if (props.autoHeight) {
       autoHeight();
     }
+
     setBackgroundWrapper();
+
   }, []);
 
   useEffect(() => {
     setBackgroundWrapper();
-  });
+  }, []);
 
   useEffect(() => {
     codeTokens();
   }, [props.language]);
 
   function setBackgroundWrapper() {
-    if (outerElement.current) {
-      outerElement.current.style.backgroundColor = window.getComputedStyle(
-        preElement.current!
-      ).backgroundColor;
+    if (outerWrapperDivElement.current && preElement.current) {
+
+      const preElementBackgroundColor = window.getComputedStyle(preElement.current).backgroundColor;
+
+      outerWrapperDivElement.current.style.backgroundColor = preElementBackgroundColor;
     }
   }
 
@@ -54,6 +56,8 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
     // But! I want the textarea size to derive from outer outer outer div
     // So.... to hack it, I passed the div reference as props and calculated it on the fly
 
+    // But... outer div size is also dependent on the inner children... so feedback loop and expands infinitely...
+
     if (textAreaElement.current && props.containerRef.current) {
 
       const { height, width } = getContainerSize();
@@ -63,22 +67,22 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
     }
 
 
-    if (preElement.current && wrapperElement.current && outerElement.current) {
+    if (preElement.current && wrapperDiv.current && outerWrapperDivElement.current) {
 
       const { height, width } = getTextareaSize();
 
       preElement.current.style.width = `${width}px`;
       preElement.current.style.height = `${height}px`;
-      wrapperElement.current.style.width = `${width}px`;
-      wrapperElement.current.style.height = `${height}px`;
+      wrapperDiv.current.style.width = `${width}px`;
+      wrapperDiv.current.style.height = `${height}px`;
 
       // calculate what 1rem is in pixels
       const rem = parseFloat(
         window.getComputedStyle(document.documentElement).fontSize
       );
 
-      outerElement.current.style.width = `${width + rem}px`;
-      outerElement.current.style.height = `${height + rem}px`;
+      outerWrapperDivElement.current.style.width = `${width + rem}px`;
+      outerWrapperDivElement.current.style.height = `${height + rem}px`;
     }
   }
 
@@ -108,9 +112,10 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
     if (manualResize) {
       return;
     }
-    if (wrapperElement.current && textAreaElement.current) {
+
+    if (wrapperDiv.current && textAreaElement.current) {
       // wrapperElement.current.style.height = `0px`;
-      wrapperElement.current.style.height = textAreaElement.current.scrollHeight + 'px';
+      wrapperDiv.current.style.height = textAreaElement.current.scrollHeight + 'px';
     }
   }
 
@@ -132,25 +137,30 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
   }
 
   const codeTokens = () => {
+
     try {
-      if (props.prismJS) {
-        if (props.prismJS.languages[props.language]) {
-          if (props.autoHeight) {
-            autoHeight();
-          }
-          const tokens = props.prismJS.highlight(
-            props.value,
-            props.prismJS.languages[props.language],
-            props.language
-          );
-          return tokens;
-        } else {
-          if (props.autoHeight) {
-            autoHeight();
-          }
-          return props.prismJS.util.encode(props.value).toString();
+      if (props.prismJS.languages[props.language]) {
+        if (props.autoHeight) {
+          autoHeight();
         }
+
+        const tokens = props.prismJS.highlight(
+          props.value,
+          props.prismJS.languages[props.language],
+          props.language
+        );
+
+        return tokens;
+
+      } else {
+
+        if (props.autoHeight) {
+          autoHeight();
+        }
+
+        return props.prismJS.util.encode(props.value).toString();
       }
+
     } catch (e) {
       console.error(e);
     }
@@ -173,44 +183,37 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
     props.onChange((e.target as HTMLTextAreaElement).value);
   }
 
-  function handleMouseDown() {
-    const { height, width } = getTextareaSize();
-    wrapperHeight = height;
-    wrapperWidth = width;
-  }
-
-  function handleMouseUp() {
-    const { height, width } = getTextareaSize();
-    if (height !== wrapperHeight || width !== wrapperWidth) {
-      setManualResize(true);
-    }
-  }
 
   return (
     <div
-      ref={outerElement!}
+      ref={outerWrapperDivElement}
+
       style={{
-        padding: '1rem',
+        // padding: '1rem', // FOUND THE UNWANTED PADDING
         boxSizing: `border-box`,
       }}
+
       className={styles['outer-wrapper']}
     >
       <div
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        ref={wrapperElement!}
+        ref={wrapperDiv}
+
         className={styles.wrap}
       >
         <textarea
+          ref={textAreaElement}
+
           className={`${props.resize ? styles[`resize-${props.resize}`] : ''}`}
           spellCheck={false}
+
           onKeyDown={handleKeyDown}
           onInput={handleInput}
           onScroll={syncScroll}
-          ref={textAreaElement!}
-          placeholder={props.placeholder || 'Type code here...'}
+
+          placeholder={props.placeholder}
           value={props.value}
         ></textarea>
+
         <pre
           ref={preElement!}
           className={`language-${props.language}`}
@@ -219,7 +222,7 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
           <div
             dangerouslySetInnerHTML={{ __html: codeTokens() || '' }}
             className="code-highlighted"
-          ></div>
+          />
         </pre>
       </div>
     </div>
