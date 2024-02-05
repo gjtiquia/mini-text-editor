@@ -1,4 +1,4 @@
-export function EditorView(props: { text: string; setText: (text: string) => void; }) {
+export function BasicView(props: { text: string; setText: (text: string) => void; }) {
     return (
         <textarea
             className="

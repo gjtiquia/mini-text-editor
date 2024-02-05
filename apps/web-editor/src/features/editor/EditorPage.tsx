@@ -1,21 +1,13 @@
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai"
 import { appStateAtom } from "../../lib/atoms"
 import { trpc } from "../../lib/trpc";
 import { GenericTextButton } from "../../ui/GenericTextButton";
-import { useEffect, useRef, useState } from "react";
-import { CodeInput } from "./CodeInput";
-
-import Prism from 'prismjs';
-import('prismjs/components/prism-markdown')
-// import "./themes/prism.css"
-// import "./themes/prism-vsc-dark-plus.css"
-import "./themes/prism-atom-dark.css"
+import { EditorView } from "./EditorView";
 
 export function EditorPage() {
 
     const [appState, setAppState] = useAtom(appStateAtom);
-
-    const containerRef = useRef<HTMLDivElement>(null);
 
     const utils = trpc.useUtils();
     const readFileQuery = trpc.readFile.useQuery({ path: appState.activeFilePath });
@@ -63,23 +55,14 @@ export function EditorPage() {
                 </div>
             </div>
 
-            <div className="h-[80vh] w-[85vw] bg-blue-500" ref={containerRef}>
+            <div className="flex-grow">
                 {readFileQuery.isPending && <p>Loading...</p>}
                 {readFileQuery.isSuccess &&
-                    <CodeInput
-                        autoHeight
-                        resize="none"
-                        // placeholder="Input your code here..."
-                        prismJS={Prism}
-                        onChange={setText}
-                        value={text}
-                        language={'markdown'}
-
-                        containerRef={containerRef}
-                    />
+                    <EditorView text={text} setText={(x) => setText(x)} />
                 }
             </div>
         </div>
     )
 }
+
 
