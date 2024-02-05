@@ -16,13 +16,17 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
   const textAreaElement = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+
     updateOuterWrapperDivBackgroundColor();
+
   }, []);
 
   useEffect(() => {
+
     if (props.autoHeight) {
-      autoHeight();
+      setWrapperHeightToTextAreaScrollHeight();
     }
+
   }, [props.autoHeight]);
 
   useEffect(() => {
@@ -35,6 +39,7 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
 
     setElementSizes();
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -84,13 +89,16 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
       wrapperDivElement.current.style.width = `${width}px`;
       wrapperDivElement.current.style.height = `${height}px`;
 
+      // (GJ): Commented because not sure why this is needed?
       // calculate what 1rem is in pixels
-      const rem = parseFloat(
-        window.getComputedStyle(document.documentElement).fontSize
-      );
+      // const rem = parseFloat(
+      //   window.getComputedStyle(document.documentElement).fontSize
+      // );
+      // outerWrapperDivElement.current.style.width = `${width + rem}px`;
+      // outerWrapperDivElement.current.style.height = `${height + rem}px`;
 
-      outerWrapperDivElement.current.style.width = `${width + rem}px`;
-      outerWrapperDivElement.current.style.height = `${height + rem}px`;
+      outerWrapperDivElement.current.style.width = `${width}px`;
+      outerWrapperDivElement.current.style.height = `${height}px`;
     }
   }
 
@@ -110,26 +118,26 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
       const { height, width } = props.containerRef.current.getBoundingClientRect();
       return { height, width };
     }
+
     return {
       height: 0,
       width: 0,
     };
   }
 
-  function autoHeight() {
+  function setWrapperHeightToTextAreaScrollHeight() {
 
-    if (wrapperDivElement.current && textAreaElement.current) {
-      wrapperDivElement.current.style.height = `0px`;
-      wrapperDivElement.current.style.height = textAreaElement.current.scrollHeight + 'px';
-    }
+    console.log("setWrapperHeightToTextAreaScrolHeight running...");
 
-  }
+    if (!wrapperDivElement.current || !textAreaElement.current)
+      return;
 
-  function startObservingTextAreaResize() {
-    if (!textAreaElement.current)
-      return null;
+    console.log("wrapper original height", wrapperDivElement.current.style.height);
 
-    return;
+    const scrollHeight = textAreaElement.current.scrollHeight;
+    wrapperDivElement.current.style.height = scrollHeight + 'px';
+
+    console.log("wrapper new height:", wrapperDivElement.current.style.height)
   }
 
   function syncScroll() {
@@ -152,8 +160,9 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
 
     try {
       if (props.prismJS.languages[props.language]) {
+
         if (props.autoHeight) {
-          autoHeight();
+          setWrapperHeightToTextAreaScrollHeight();
         }
 
         const tokens = props.prismJS.highlight(
@@ -167,7 +176,7 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
       } else {
 
         if (props.autoHeight) {
-          autoHeight();
+          setWrapperHeightToTextAreaScrollHeight();
         }
 
         return props.prismJS.util.encode(props.value).toString();
@@ -221,7 +230,9 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
           onKeyDown={handleKeyDown}
           onInput={handleInput}
           onScroll={syncScroll}
-          onResize={() => setElementSizes()}
+
+          // An attempt to replace the ResizeObserver
+          // onResize={() => setElementSizes()}
 
           placeholder={props.placeholder}
           value={props.value}
