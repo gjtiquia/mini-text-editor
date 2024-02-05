@@ -5,7 +5,7 @@ import Prism from 'prismjs';
 import('prismjs/components/prism-markdown')
 // import "./themes/prism.css"
 // import "./themes/prism-vsc-dark-plus.css"
-// import "./themes/prism-atom-dark.css"
+import "./themes/prism-atom-dark.css"
 
 export function SyntaxHighlightedView(props: { text: string; setText: (text: string) => void; }) {
 
@@ -15,7 +15,6 @@ export function SyntaxHighlightedView(props: { text: string; setText: (text: str
         <div className="h-full w-full flex justify-center">
             <div className="h-full w-full bg-blue-500" ref={containerRef}>
                 <CodeInput
-                    autoHeight
                     // placeholder="Input your code here..."
                     prismJS={Prism}
                     onChange={props.setText}

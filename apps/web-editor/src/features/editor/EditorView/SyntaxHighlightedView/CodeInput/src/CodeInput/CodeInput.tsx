@@ -23,19 +23,10 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
 
   useEffect(() => {
 
-    if (props.autoHeight) {
-      setWrapperHeightToTextAreaScrollHeight();
-    }
-
-  }, [props.autoHeight]);
-
-  useEffect(() => {
-
     // Commented because we want to stop the infinite resize loop
     // if (!textAreaElement.current)
     //   return;
     // new ResizeObserver(setElementSizes).observe(textAreaElement.current)
-
 
     setElementSizes();
 
@@ -125,21 +116,6 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
     };
   }
 
-  function setWrapperHeightToTextAreaScrollHeight() {
-
-    console.log("setWrapperHeightToTextAreaScrolHeight running...");
-
-    if (!wrapperDivElement.current || !textAreaElement.current)
-      return;
-
-    console.log("wrapper original height", wrapperDivElement.current.style.height);
-
-    const scrollHeight = textAreaElement.current.scrollHeight;
-    wrapperDivElement.current.style.height = scrollHeight + 'px';
-
-    console.log("wrapper new height:", wrapperDivElement.current.style.height)
-  }
-
   function syncScroll() {
     if (preElement.current === null || textAreaElement.current === null) return;
 
@@ -161,10 +137,6 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
     try {
       if (props.prismJS.languages[props.language]) {
 
-        if (props.autoHeight) {
-          setWrapperHeightToTextAreaScrollHeight();
-        }
-
         const tokens = props.prismJS.highlight(
           props.value,
           props.prismJS.languages[props.language],
@@ -174,10 +146,6 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
         return tokens;
 
       } else {
-
-        if (props.autoHeight) {
-          setWrapperHeightToTextAreaScrollHeight();
-        }
 
         return props.prismJS.util.encode(props.value).toString();
       }
