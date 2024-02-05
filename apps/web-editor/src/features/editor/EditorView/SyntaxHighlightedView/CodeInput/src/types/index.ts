@@ -6,7 +6,6 @@ export type CodeInputProps = {
   language: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  resize?: 'none' | 'both' | 'horizontal' | 'vertical';
   autoHeight?: boolean;
 
   containerRef: React.RefObject<HTMLDivElement>

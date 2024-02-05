@@ -3,7 +3,6 @@ import React, {
   KeyboardEvent,
   useEffect,
   useRef,
-  useState,
 } from 'react';
 import styles from './styles.module.css';
 import { CodeInputProps } from '../types';
@@ -11,45 +10,52 @@ import { handleEnterKey, handleTabKey } from '../utils';
 
 export const CodeInput: React.FC<CodeInputProps> = (props) => {
 
-  let outerWrapperDivElement = useRef<HTMLDivElement>(null);
-  let wrapperDiv = useRef<HTMLDivElement>(null);
-  let preElement = useRef<HTMLPreElement>(null);
-  let textAreaElement = useRef<HTMLTextAreaElement>(null);
-
-  const [manualResize, setManualResize] = useState(false);
+  const outerWrapperDivElement = useRef<HTMLDivElement>(null);
+  const wrapperDivElement = useRef<HTMLDivElement>(null);
+  const preElement = useRef<HTMLPreElement>(null);
+  const textAreaElement = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-
-    watchResize();
-
-    if (props.autoHeight) {
-      autoHeight();
-    }
-
-    setBackgroundWrapper();
-
+    updateOuterWrapperDivBackgroundColor();
   }, []);
 
   useEffect(() => {
-    setBackgroundWrapper();
+    if (props.autoHeight) {
+      autoHeight();
+    }
+  }, [props.autoHeight]);
+
+  useEffect(() => {
+
+    // Commented because we want to stop the infinite resize loop
+    // if (!textAreaElement.current)
+    //   return;
+    // new ResizeObserver(setElementSizes).observe(textAreaElement.current)
+
+
+    setElementSizes();
+
   }, []);
 
   useEffect(() => {
     codeTokens();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.language]);
 
-  function setBackgroundWrapper() {
-    if (outerWrapperDivElement.current && preElement.current) {
+  function updateOuterWrapperDivBackgroundColor() {
+    if (!outerWrapperDivElement.current || !preElement.current)
+      return;
 
-      const preElementBackgroundColor = window.getComputedStyle(preElement.current).backgroundColor;
-
-      outerWrapperDivElement.current.style.backgroundColor = preElementBackgroundColor;
-    }
+    const preElementBackgroundColor = window.getComputedStyle(preElement.current).backgroundColor;
+    outerWrapperDivElement.current.style.backgroundColor = preElementBackgroundColor;
   }
 
-  function setSizes() {
+  function setElementSizes() {
 
-    setBackgroundWrapper();
+    console.log("setElementSizes: Running...");
+
+    updateOuterWrapperDivBackgroundColor();
 
     // Basically... in the orignal code, the wrapper size depends on inner textarea size
     // Everything is derived from textarea
@@ -62,19 +68,21 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
 
       const { height, width } = getContainerSize();
 
+      console.log("container size", { height, width })
+
       textAreaElement.current.style.width = `${width}px`;
       textAreaElement.current.style.height = `${height}px`;
     }
 
 
-    if (preElement.current && wrapperDiv.current && outerWrapperDivElement.current) {
+    if (preElement.current && wrapperDivElement.current && outerWrapperDivElement.current) {
 
       const { height, width } = getTextareaSize();
 
       preElement.current.style.width = `${width}px`;
       preElement.current.style.height = `${height}px`;
-      wrapperDiv.current.style.width = `${width}px`;
-      wrapperDiv.current.style.height = `${height}px`;
+      wrapperDivElement.current.style.width = `${width}px`;
+      wrapperDivElement.current.style.height = `${height}px`;
 
       // calculate what 1rem is in pixels
       const rem = parseFloat(
@@ -109,28 +117,32 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
   }
 
   function autoHeight() {
-    if (manualResize) {
-      return;
+
+    if (wrapperDivElement.current && textAreaElement.current) {
+      wrapperDivElement.current.style.height = `0px`;
+      wrapperDivElement.current.style.height = textAreaElement.current.scrollHeight + 'px';
     }
 
-    if (wrapperDiv.current && textAreaElement.current) {
-      // wrapperElement.current.style.height = `0px`;
-      wrapperDiv.current.style.height = textAreaElement.current.scrollHeight + 'px';
-    }
   }
 
-  function watchResize() {
-    new ResizeObserver(setSizes).observe(textAreaElement.current!);
+  function startObservingTextAreaResize() {
+    if (!textAreaElement.current)
+      return null;
+
+    return;
   }
 
   function syncScroll() {
     if (preElement.current === null || textAreaElement.current === null) return;
+
     preElement.current.scrollTop = textAreaElement.current.scrollTop;
     preElement.current.scrollLeft = textAreaElement.current.scrollLeft;
+
     // Prevents a scrolling issue when the user manually resizes the wrapper
     if (textAreaElement.current.scrollTop > preElement.current.scrollTop) {
       textAreaElement.current.scrollTop = preElement.current.scrollTop;
     }
+
     if (textAreaElement.current.scrollLeft > preElement.current.scrollLeft) {
       textAreaElement.current.scrollLeft = preElement.current.scrollLeft;
     }
@@ -196,19 +208,20 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
       className={styles['outer-wrapper']}
     >
       <div
-        ref={wrapperDiv}
+        ref={wrapperDivElement}
 
         className={styles.wrap}
       >
         <textarea
           ref={textAreaElement}
 
-          className={`${props.resize ? styles[`resize-${props.resize}`] : ''}`}
+          className="resize-none"
           spellCheck={false}
 
           onKeyDown={handleKeyDown}
           onInput={handleInput}
           onScroll={syncScroll}
+          onResize={() => setElementSizes()}
 
           placeholder={props.placeholder}
           value={props.value}

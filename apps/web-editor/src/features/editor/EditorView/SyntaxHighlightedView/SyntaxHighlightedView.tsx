@@ -12,11 +12,10 @@ export function SyntaxHighlightedView(props: { text: string; setText: (text: str
     const containerRef = useRef<HTMLDivElement>(null);
 
     return (
-        <div className="flex justify-center">
-            <div className="max-h-[80vh] max-w-[85vw] bg-blue-500" ref={containerRef}>
+        <div className="h-full w-full flex justify-center">
+            <div className="h-full w-full bg-blue-500" ref={containerRef}>
                 <CodeInput
                     autoHeight
-                    resize="none"
                     // placeholder="Input your code here..."
                     prismJS={Prism}
                     onChange={props.setText}
