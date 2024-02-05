@@ -8,5 +8,6 @@ export type CodeInputProps = {
   placeholder?: string;
   autoHeight?: boolean;
 
-  containerRef: React.RefObject<HTMLDivElement>
+  // containerRef: React.RefObject<HTMLDivElement>
+  containerSize: { height: string, width: string }
 };

@@ -1,5 +1,4 @@
-import React, {
-  ChangeEvent,
+import {
   KeyboardEvent,
   useEffect,
   useRef,
@@ -8,7 +7,7 @@ import styles from './styles.module.css';
 import { CodeInputProps } from '../types';
 import { handleEnterKey, handleTabKey } from '../utils';
 
-export const CodeInput: React.FC<CodeInputProps> = (props) => {
+export function CodeInput(props: CodeInputProps) {
 
   const outerWrapperDivElement = useRef<HTMLDivElement>(null);
   const wrapperDivElement = useRef<HTMLDivElement>(null);
@@ -69,9 +68,9 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
 
     // But... outer div size is also dependent on the inner children... so feedback loop and expands infinitely...
 
-    if (textAreaElement.current && props.containerRef.current) {
+    if (textAreaElement.current) {
 
-      const { height, width } = getContainerSize();
+      const { height, width } = props.containerSize;
 
       console.log("container size", { height, width })
 
@@ -107,18 +106,6 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
       const { height, width } = textAreaElement.current.getBoundingClientRect();
       return { height, width };
     }
-    return {
-      height: 0,
-      width: 0,
-    };
-  }
-
-  function getContainerSize() {
-    if (props.containerRef.current) {
-      const { height, width } = props.containerRef.current.getBoundingClientRect();
-      return { height, width };
-    }
-
     return {
       height: 0,
       width: 0,
@@ -190,20 +177,17 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     let input_element = textAreaElement.current!;
     let code = input_element.value;
+
     if (event.key === 'Tab') {
       handleTabKey(event, input_element, code);
       props.onChange(input_element.value);
     }
+
     if (event.key === 'Enter') {
       handleEnterKey(event, input_element);
       props.onChange(input_element.value);
     }
   }
-
-  async function handleInput(e: ChangeEvent<HTMLTextAreaElement>) {
-    props.onChange((e.target as HTMLTextAreaElement).value);
-  }
-
 
   return (
     <div
@@ -228,7 +212,7 @@ export const CodeInput: React.FC<CodeInputProps> = (props) => {
           spellCheck={false}
 
           onKeyDown={handleKeyDown}
-          onInput={handleInput}
+          onChange={e => props.onChange(e.target.value)}
           onScroll={syncScroll}
 
           // An attempt to replace the ResizeObserver
