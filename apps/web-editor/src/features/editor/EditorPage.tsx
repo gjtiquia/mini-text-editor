@@ -9,6 +9,7 @@ export function EditorPage() {
 
     const [appState, setAppState] = useAtom(appStateAtom);
 
+
     const utils = trpc.useUtils();
     const readFileQuery = trpc.readFile.useQuery({ path: appState.activeFilePath });
     const overwriteFileMutation = trpc.overwriteFile.useMutation({
@@ -34,24 +35,16 @@ export function EditorPage() {
     }
 
     return (
-        <div className="h-dvh flex flex-col gap-4 p-2">
-            <h1 className="font-bold text-center">
-                Mini Text Editor: Explorer
-            </h1>
+        <div className="h-dvh flex flex-col gap-2 p-2">
 
             <div className="flex justify-between">
                 <div>
-                    <GenericTextButton text="Back To Explorer" onClick={() => setAppState({ isInExplorerMode: true, activeFilePath: "" })} />
+                    <GenericTextButton text="Back" onClick={() => setAppState({ isInExplorerMode: true, activeFilePath: "" })} />
                 </div>
 
                 <div className="flex gap-2">
-                    {isTextDirty() &&
-                        <GenericTextButton text="Reset" onClick={() => setText(originalText)} />
-                    }
-
-                    {isTextDirty() &&
-                        <GenericTextButton text="Save" onClick={() => overwriteFileMutation.mutate({ path: appState.activeFilePath, text: text })} />
-                    }
+                    <GenericTextButton text="Reset" isDisabled={!isTextDirty()} onClick={() => setText(originalText)} />
+                    <GenericTextButton text="Save" isDisabled={!isTextDirty()} onClick={() => overwriteFileMutation.mutate({ path: appState.activeFilePath, text: text })} />
                 </div>
             </div>
 
