@@ -1,5 +1,9 @@
 # Mini Text Editor
 
+## Dev Commands
+
+`npm install`: Installs all required dependencies.
+
 ## TODO
 
 - textarea turn off spellcheck
@@ -9,6 +13,18 @@
   - client would be just querying
   - file server would then be stateless
 
-## Dev Commands
+## Syntax Highlight Notes
 
-`npm install`: Installs all required dependencies.
+- CodeInput: `<textarea/>` + `<pre><code/></pre>` + prismJS/highlightJS
+  - [Blog Post](https://css-tricks.com/creating-an-editable-textarea-that-supports-syntax-highlighted-code/)
+  - [GitHub Repo](https://github.com/WebCoder49/code-input)
+  - [react-code-input](https://github.com/srsholmes/react-code-input)
+    - Inspired by CodeInput from Oliver Geer (WebCoder49)
+
+- remarkJS
+  - [react-markdown](https://github.com/remarkjs/react-markdown)
+    - [Demo Pagee](https://remarkjs.github.io/react-markdown/)
+    - [Demo Page JS](https://github.com/remarkjs/react-markdown/blob/website/src/index.js)
+    - [Demo Page CSS](https://github.com/remarkjs/react-markdown/blob/website/src/index.css)
+      - Basically similar technique to CodeInput, `<textarea/>` but with `<div/>` instead
+      - Includes all-in-one package for parsing markdown to html

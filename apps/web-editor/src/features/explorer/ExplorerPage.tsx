@@ -22,7 +22,7 @@ export function ExplorerPage() {
     return (
         <div className="flex flex-col gap-4 p-2 break-words">
             <h1 className="font-bold text-center">
-                Mini Text Editor: Explorer
+                Mini Text Editor
             </h1>
 
             <div>
