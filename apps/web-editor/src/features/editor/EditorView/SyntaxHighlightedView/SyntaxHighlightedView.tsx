@@ -10,14 +10,12 @@ import "./themes/prism-atom-dark.css"
 export function SyntaxHighlightedView(props: { text: string; setText: (text: string) => void; }) {
 
     return (
-        <div className="h-full w-full flex justify-center">
-            <div className="h-full w-full">
-                <CodeInput
-                    onChange={props.setText}
-                    value={props.text}
-                    language={'markdown'}
-                />
-            </div>
+        <div className="flex-grow min-h-0">
+            <CodeInput
+                onChange={props.setText}
+                value={props.text}
+                language={'markdown'}
+            />
         </div>
     );
 }
