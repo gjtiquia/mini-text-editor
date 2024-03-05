@@ -48,7 +48,7 @@ export function EditorPage() {
                 </div>
             </div>
 
-            <div className="flex-grow">
+            <div className="flex-grow min-h-0 flex flex-col">
                 {readFileQuery.isPending && <p>Loading...</p>}
                 {readFileQuery.isSuccess &&
                     <EditorView text={text} setText={(x) => setText(x)} />

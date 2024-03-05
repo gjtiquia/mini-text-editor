@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { BasicView } from "./BasicView";
 import { SyntaxHighlightedView } from "./SyntaxHighlightedView";
+import { PreviewView } from "./PreviewView";
 import { GenericTextButton } from "../../../ui/GenericTextButton";
-import { PreviewView } from "./PreviewView.1";
 
 type Tab = "Basic" | "Highlighted" | "Preview"
 
@@ -11,14 +11,14 @@ export function EditorView(props: { text: string; setText: (text: string) => voi
     const [tab, setTab] = useState<Tab>("Basic");
 
     return (
-        <div className="h-full w-full flex flex-col">
+        <div className="flex-grow min-h-0 flex flex-col">
             <div className="flex justify-evenly">
                 <GenericTextButton text="Raw" onClick={() => setTab("Basic")} />
                 <GenericTextButton text="Highlighted" onClick={() => setTab("Highlighted")} />
                 <GenericTextButton text="Preview" onClick={() => setTab("Preview")} />
             </div>
 
-            <div className="flex-grow">
+            <div className="flex-grow min-h-0 flex flex-col">
                 <TextView tab={tab} {...props} />
             </div>
         </div>
