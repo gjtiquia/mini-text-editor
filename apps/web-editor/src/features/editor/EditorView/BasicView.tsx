@@ -6,6 +6,7 @@ export function BasicView(props: { text: string; setText: (text: string) => void
                 bg-transparent rounded-md border border-black
                 font-mono whitespace-pre leading-tight
             "
+            spellCheck={false}
             value={props.text}
             onChange={e => props.setText(e.target.value)} />
     );
