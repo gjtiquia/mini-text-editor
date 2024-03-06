@@ -1,14 +1,15 @@
-// TODO : use remarkJS
+import Markdown from 'react-markdown';
 
-export function PreviewView(props: { text: string; }) {
+export function PreviewView(props: { text: string; setText: (text: string) => void; }) {
+
     return (
-        <textarea
+        <div
             className="
-                h-full w-full px-2 
-                bg-transparent rounded-md border border-black
-                font-mono whitespace-pre
+                flex-grow min-h-0 overflow-auto p-2 prose
+                bg-transparent rounded-md border border-black 
             "
-            value={props.text}
-        />
+        >
+            <Markdown>{props.text}</Markdown>
+        </div>
     );
 }

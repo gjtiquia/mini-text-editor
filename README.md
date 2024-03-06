@@ -23,7 +23,7 @@
 
 - remarkJS
   - [react-markdown](https://github.com/remarkjs/react-markdown)
-    - [Demo Pagee](https://remarkjs.github.io/react-markdown/)
+    - [Demo Page](https://remarkjs.github.io/react-markdown/)
     - [Demo Page JS](https://github.com/remarkjs/react-markdown/blob/website/src/index.js)
     - [Demo Page CSS](https://github.com/remarkjs/react-markdown/blob/website/src/index.css)
       - Basically similar technique to CodeInput, `<textarea/>` but with `<div/>` instead
