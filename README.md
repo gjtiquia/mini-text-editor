@@ -28,3 +28,9 @@
     - [Demo Page CSS](https://github.com/remarkjs/react-markdown/blob/website/src/index.css)
       - Basically similar technique to CodeInput, `<textarea/>` but with `<div/>` instead
       - Includes all-in-one package for parsing markdown to html
+     
+- Shiki
+  - [Shiki Style](https://shiki.style/)
+    - [Playground](https://shiki.style/guide/#playground)
+      - Runtime syntax highlighting
+      - in chrome dev tools shows that it uses `<textarea/>` and `<pre><code/></pre>` as well  
